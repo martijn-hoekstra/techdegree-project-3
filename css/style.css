@@ -1,4 +1,4 @@
-/* ================================= 
+/* =================================
   Base Element Styles
 ==================================== */
 
@@ -19,7 +19,7 @@ body {
 }
 
 header {
-	text-align: center;  
+	text-align: center;
 }
 
 h1 {
@@ -32,7 +32,7 @@ a {
   text-decoration: none;
 }
 
-/* ================================= 
+/* =================================
   Form Element Styles
 ==================================== */
 
@@ -54,7 +54,7 @@ fieldset {
 
 legend,
 button {
-	font-size: 1.25em;	
+	font-size: 1.25em;
 }
 
 legend {
@@ -78,7 +78,7 @@ label {
 
 input,
 select {
-	margin-bottom: 1.125em;	
+	margin-bottom: 1.125em;
 }
 
 input {
@@ -94,6 +94,12 @@ input:focus {
 	background: #fff;
 	border-color: #5e97b0;
 	transition: border-color .4s, background-color .4s;
+}
+
+input.invalid {
+	background: #f7dada;
+	border: 2px solid #ea2121;
+	outline: none;
 }
 
 input[type="checkbox"],
@@ -113,7 +119,7 @@ button:hover {
 	background: #184c62;
 }
 
-/* ================================= 
+/* =================================
   Page Styles
 ==================================== */
 
@@ -135,7 +141,7 @@ button:hover {
 	margin-top: 1.25em;
 }
 
-/* ================================= 
+/* =================================
   Helper Classes
 ==================================== */
 
@@ -149,7 +155,7 @@ button:hover {
   clear: both;
 }
 
-/* ================================= 
+/* =================================
   Media Queries
 ==================================== */
 

@@ -1,7 +1,12 @@
 // Global variables
 const colors = $('#color').children();
+let grandTotal = 0;
+
 $('#payment option:contains("Credit Card")').prop('selected',true);
 $('#paypal, #bitcoin').hide();
+
+$('.activities').append('<div class="grandTotal"></div>');
+
 
 // Job role
 $('#other-title').hide();
@@ -11,7 +16,20 @@ $('#title').on('change', e => {
   } else {
     $('#other-title').hide();
   }
-});
+}); // end event listener
+
+// Validate data and add or remove 'invalid' class to elements
+const validate = (regex, element) => {
+  if(regex.test(element.val())) {
+    if(element.hasClass('invalid')) {
+      element.removeClass('invalid');
+    }
+  } else {
+    if(!(element.hasClass('invalid'))) {
+      element.addClass('invalid');
+    }
+  }
+}; // end function
 
 // T-shirt info
 $('#design').on('change', e => {
@@ -32,10 +50,26 @@ $('#design').on('change', e => {
   } else {
     $('#color').append(colors);
   }
-});
+}); // end event listener
 
 // Register for activities
-
+$('.activities').on('change', e => {
+  // /^[a-zA-Z\s]*— ?([\w\s-]*), ?\$([\d]+)$/
+  const regex = /^([a-zA-Z\s\.]+)\s—\s([\w\s-]+),\s\$([\d]+)$/;
+  const activity = $(e.target).parent().text();
+  if($(e.target).is(':checked')){
+    console.log(activity.replace(regex, '$2'));
+    grandTotal += parseInt(activity.replace(regex, '$3'));
+    $('.grandTotal').html(`<p>Total: $${grandTotal}</p>`);
+  } else {
+    grandTotal -= parseInt(activity.replace(regex, '$3'));
+    if(grandTotal > 0) {
+      $('.grandTotal').html(`<p>Total: $${grandTotal}</p>`);
+    } else {
+      $('.grandTotal').html('');
+    }
+  }
+}); // end event listener
 
 // Payment info
 $('#payment').on('change', e => {
@@ -53,7 +87,7 @@ $('#payment').on('change', e => {
     $('#credit-card').fadeIn(1000);
     $('#paypal, #bitcoin').hide();
   }
-});
+}); // end event listener
 
 // Validate form
 const validateForm = form => {
@@ -63,18 +97,23 @@ const validateForm = form => {
   const zipCode = $('#zip');
   const cvv = $('#cvv');
 
-  // Validate Name
-  console.log(/^[a-zA-Z\s]{2,}$/.test(name.val()));
+  validate(/^[a-zA-Z\s]{2,}$/, name);
+  validate(/^[^@]+@[^@]+\.[a-z]+$/i, mail);
 
-  // Validate Email
-  console.log(/^[^@]+@[^@]+\.[a-z]+$/i.test(mail.val()));
   // Validate Register for Activities (only one checkbox has to be checked)
-  colors.each(function() {
+  if ($(".activities :checkbox:checked").length > 0) {
+    console.log('activities checked');
+  }
 
-  });
-};
+  // Validate creditcard information
+  if($('#payment').val() === 'credit card') {
+    validate(/^\d{13,16}$/, creditCardNum);
+    validate(/^\d{5}$/, zipCode);
+    validate(/^\d{3}$/, cvv);
+  }
+}; // end function
 
 $('form').on('submit', e => {
   e.preventDefault();
   validateForm();
-});
+}); // end event listener
