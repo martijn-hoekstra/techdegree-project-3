@@ -96,10 +96,9 @@ input:focus {
 	transition: border-color .4s, background-color .4s;
 }
 
-input.invalid {
+.invalid {
 	background: #f7dada;
 	border: 2px solid #ea2121;
-	outline: none;
 }
 
 input[type="checkbox"],
