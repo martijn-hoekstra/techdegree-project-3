@@ -20,13 +20,14 @@
 
       <fieldset>
         <legend>Basic Info</legend>
-
-        <label for="name">Name:</label>
-        <input type="text" id="name" name="user_name" autofocus>
-
-        <label for="mail">Email:</label>
-        <input type="email" id="mail" name="user_email">
-
+        <div>
+          <label for="name">Name:</label>
+          <input type="text" id="name" name="user_name" autofocus>
+        </div>
+        <div>
+          <label for="mail">Email:</label>
+          <input type="email" id="mail" name="user_email">
+        </div>
         <label for="title">Job Role</label>
         <select id="title" name="user_title">
           <option value="full-stack js developer">Full Stack JavaScript Developer</option>
@@ -83,8 +84,8 @@
         <label><input type="checkbox" name="node"> Node.js Workshop — Tuesday 1pm-4pm, $100</label>
         <label><input type="checkbox" name="build-tools"> Build tools Workshop — Wednesday 9am-12pm, $100</label>
         <label><input type="checkbox" name="npm"> npm Workshop — Wednesday 1pm-4pm, $100</label>
-
       </fieldset>
+
       <fieldset>
         <legend>Payment Info</legend>
 
@@ -97,45 +98,48 @@
         </select>
 
         <div id="credit-card" class="credit-card">
+          <div>
+            <div class="col-6 col">
+              <label for="cc-num">Card Number:</label>
+              <input id="cc-num" name="user_cc-num" type="text">
+            </div>
 
-          <div class="col-6 col">
-            <label for="cc-num">Card Number:</label>
-        	  <input id="cc-num" name="user_cc-num" type="text">
+            <div class="col-3 col">
+              <label for="zip">Zip Code:</label>
+              <input id="zip" name="user_zip" type="text">
+            </div>
+
+            <div class="col-3 col">
+              <label for="cvv">CVV:</label>
+              <input id="cvv" name="user_cvv" type="text">
+            </div>
           </div>
 
-          <div class="col-3 col">
-            <label for="zip">Zip Code:</label>
-            <input id="zip" name="user_zip" type="text">
+          <div style="clear:both;">
+            <label for="exp-month">Expiration Date:</label>
+            <select id="exp-month" name="user_exp-month">
+              <option value="1">1 - January</option>
+              <option value="2">2 - February</option>
+              <option value="3">3 - March</option>
+              <option value="4">4 - April</option>
+              <option value="5">5 - May</option>
+              <option value="6">6 - June</option>
+              <option value="7">7 - July</option>
+              <option value="8">8 - August</option>
+              <option value="9">9 - September</option>
+              <option value="10">10 - October</option>
+              <option value="11">11 - November</option>
+              <option value="12">12 - December</option>
+            </select>
+            <label for="exp-year">Expiration Year:</label>
+            <select id="exp-year" name="user_exp-year">
+              <option value="2016">2016</option>
+              <option value="2017">2017</option>
+              <option value="2018">2018</option>
+              <option value="2019">2019</option>
+              <option value="2020">2020</option>
+            </select>
           </div>
-
-          <div class="col-3 col">
-            <label for="cvv">CVV:</label>
-            <input id="cvv" name="user_cvv" type="text">
-          </div>
-
-          <label for="exp-month">Expiration Date:</label>
-          <select id="exp-month" name="user_exp-month">
-            <option value="1">1 - January</option>
-            <option value="2">2 - February</option>
-            <option value="3">3 - March</option>
-            <option value="4">4 - April</option>
-            <option value="5">5 - May</option>
-            <option value="6">6 - June</option>
-            <option value="7">7 - July</option>
-            <option value="8">8 - August</option>
-            <option value="9">9 - September</option>
-            <option value="10">10 - October</option>
-            <option value="11">11 - November</option>
-            <option value="12">12 - December</option>
-          </select>
-          <label for="exp-year">Expiration Year:</label>
-          <select id="exp-year" name="user_exp-year">
-            <option value="2016">2016</option>
-            <option value="2017">2017</option>
-            <option value="2018">2018</option>
-            <option value="2019">2019</option>
-            <option value="2020">2020</option>
-          </select>
         </div>
 
         <div id="paypal">

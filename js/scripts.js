@@ -18,6 +18,11 @@
 // Global variables
 const colors = $('#color').children();
 const labels = $('.activities label');
+const name = $('#name');
+const mail = $('#mail');
+const creditCardNum = $('#cc-num');
+const zipCode = $('#zip');
+const cvv = $('#cvv');
 $('#color').empty();
 $('#colors-js-puns').hide();
 
@@ -38,16 +43,76 @@ $('#title').on('change', e => {
   }
 }); // end event listener
 
+// Generates error messages based on the input field's id
+const errorMessage = (parent, type, value) => {
+  let fieldType = '';
+  const error = parent.find('.errorMessage');
+  switch(type){
+    case 'name':
+      fieldType = 'name';
+      break;
+    case 'mail':
+      fieldType = 'email address';
+      break;
+    case 'cc-num':
+      fieldType = 'credit card number';
+      break;
+    case 'zip':
+      fieldType = 'zip code';
+      break;
+    case 'cvv':
+      fieldType = 'CVV number';
+      break;
+  }
+
+  // checks if there's already an error message displayed
+  const outputError = message => {
+    if(error.length) {
+      error.text(message);
+    } else {
+      parent.append(`<span class="errorMessage">${message}</span>`);
+    }
+  }
+
+  if(value.length) {
+    if($('#payment').val() === 'credit card') {
+      if(fieldType === 'credit card number' && (value.length < 13 || value.length > 16)) {
+        outputError(`Please enter a ${fieldType} that is between 13 and 16 digits long.`);
+      }
+  
+      if(fieldType === 'zip code' && value.length !== 5) {
+        outputError(`Please enter a ${fieldType} that is 5 digits long.`);
+      }
+  
+      if(fieldType === 'CVV number' && value.length !== 3) {
+        outputError(`Please enter a ${fieldType} that is 3 digits long.`);
+      }
+    }
+  } else {
+    outputError(`Please enter your ${fieldType}.`);
+  }
+}
+
 // Validate data and add or remove 'invalid' class to elements
 const validate = (regex, element) => {
-  if(regex.test(element.val())) {
+  const value = element.val();
+  const parent = element.parent();
+  const fieldType = element.attr('id');
+
+  if(regex.test(value)) {
     if(element.hasClass('invalid')) {
       element.removeClass('invalid');
+      if(parent.find('.errorMessage').length) {
+        parent.find('.errorMessage').remove();
+      }
     }
+    return true;
   } else {
     if(!(element.hasClass('invalid'))) {
       element.addClass('invalid');
     }
+    errorMessage(parent, fieldType, value);
+    return false;
   }
 }; // end function
 
@@ -123,16 +188,28 @@ $('#payment').on('change', e => {
   }
 }); // end event listener
 
-// $('#name').on('blur', validate(/^[a-zA-Z\s]{2,}$/, $('#name')));
+name.on('keyup blur', e => {
+  validate(/^[a-zA-Z\s]{2,}$/, $(e.target));
+});
+
+mail.on('keyup blur', e => {
+  validate(/^[^@]+@[^@]+\.[a-z]+$/i, $(e.target));
+});
+
+creditCardNum.on('keyup blur', e => {
+  validate(/^\d{13,16}$/, $(e.target));
+});
+
+zipCode.on('keyup blur', e => {
+  validate(/^\d{5}$/, $(e.target));
+});
+
+cvv.on('keyup blur', e => {
+  validate(/^\d{3}$/, $(e.target));
+});
 
 // Validate form
 const validateForm = form => {
-  const name = $('#name');
-  const mail = $('#mail');
-  const creditCardNum = $('#cc-num');
-  const zipCode = $('#zip');
-  const cvv = $('#cvv');
-
   validate(/^[a-zA-Z\s]{2,}$/, name);
   validate(/^[^@]+@[^@]+\.[a-z]+$/i, mail);
 

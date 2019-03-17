@@ -96,9 +96,14 @@ input:focus {
 	transition: border-color .4s, background-color .4s;
 }
 
-.invalid {
+.invalid, input.invalid:focus {
 	background: #f7dada;
 	border: 2px solid #ea2121;
+}
+span.errorMessage {
+  color:#ea2121;
+  display:block;
+  margin-bottom:10px;
 }
 
 input[type="checkbox"],
