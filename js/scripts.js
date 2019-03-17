@@ -1,20 +1,3 @@
-/***
-  TODO LIST
-  v User cannot select two activities that are at the same time.
-  - Let the form submit when all info is correct
-  v Add invalid style for activities checkboxes
-  - Display real-time error messages for user input
-    . Form provides at least one error message in real time, before the form is submitted.
-      For example, the error message appears near the email field when the user begins to type,
-      and disappears as soon as the user has entered a complete and correctly formatted email address.
-    . Form provides at least one error message that changes depending on the error.
-      For example, the email field displays a different error message when the email
-      field is empty than it does when the email address is formatted incorrectly.
-      *This is accomplished without the use of HTML5's built-in field validation.
-  - Check when JavaScript is disabled, all form fields and payment information is displayed,
-    including the "Other" field under the "Job Role" section.
-***/
-
 // Global variables
 const colors = $('#color').children();
 const labels = $('.activities label');
@@ -23,17 +6,18 @@ const mail = $('#mail');
 const creditCardNum = $('#cc-num');
 const zipCode = $('#zip');
 const cvv = $('#cvv');
+let grandTotal = 0;
+
 $('#color').empty();
 $('#colors-js-puns').hide();
 
-let grandTotal = 0;
-
+// Select credit card as default payment option, and hide other payment information
 $('#payment option:contains("Credit Card")').prop('selected',true);
 $('#paypal, #bitcoin').hide();
 
 $('.activities').append('<div class="grandTotal"></div>');
 
-// Job role
+// Diplays or hides the job role input field
 $('#other-title').hide();
 $('#title').on('change', e => {
   if($(e.target).val() === 'other') {
@@ -65,7 +49,7 @@ const errorMessage = (parent, type, value) => {
       break;
   }
 
-  // checks if there's already an error message displayed
+  // Checks if there's already an error message displayed
   const outputError = message => {
     if(error.length) {
       error.text(message);
@@ -74,16 +58,15 @@ const errorMessage = (parent, type, value) => {
     }
   }
 
+  // Only check credit card information when credit card is selected as payment method
   if(value.length) {
     if($('#payment').val() === 'credit card') {
       if(fieldType === 'credit card number' && (value.length < 13 || value.length > 16)) {
         outputError(`Please enter a ${fieldType} that is between 13 and 16 digits long.`);
       }
-  
       if(fieldType === 'zip code' && value.length !== 5) {
         outputError(`Please enter a ${fieldType} that is 5 digits long.`);
       }
-  
       if(fieldType === 'CVV number' && value.length !== 3) {
         outputError(`Please enter a ${fieldType} that is 3 digits long.`);
       }
@@ -93,7 +76,10 @@ const errorMessage = (parent, type, value) => {
   }
 }
 
-// Validate data and add or remove 'invalid' class to elements
+/***
+  Validate data and add or remove 'invalid' class to elements.
+  Also calls errorMessage function to display error messages.
+  ***/
 const validate = (regex, element) => {
   const value = element.val();
   const parent = element.parent();
@@ -116,7 +102,10 @@ const validate = (regex, element) => {
   }
 }; // end function
 
-// T-shirt info
+/***
+  Changes t-shirt colors based on what theme is selected by the user.
+  Colors are shown only when a theme is selected.
+***/
 $('#design').on('change', e => {
   $('#color').empty();
   if($(e.target).val() === 'js puns') {
@@ -139,13 +128,20 @@ $('#design').on('change', e => {
   }
 }); // end event listener
 
-// Register for activities
+/***
+  Adds event listener to activities list. Whenever an activity is checked,
+  the price will be added to a total price underneath the acitivity section.
+  Also the time and day of the activity is checked and compared to other
+  activities. When there are other acitivities on the same day and time,
+  they will be disabled to select for the user.
+***/
+
 $('.activities').on('change', e => {
   const regexNew = /^([a-zA-Z\s\.]+\s—\s)([\w\s-]+)?(,\s)?\$([\d]+)$/;
   const activity = $(e.target).parent().text();
   const checked = $(e.target).is(':checked');
-  // if($(e.target).is(':checked')) {
   const time = activity.replace(regexNew, '$2');
+  // Compares time and day of activity and disables activities when needed
   if(time !== '') {
     labels.each(function(index, element){
       if(time === $(this).text().replace(regexNew, '$2') && $(this).text() !== activity) {
@@ -157,6 +153,7 @@ $('.activities').on('change', e => {
       }
     });
   }
+  // Adds price of activity to total price
   if(checked){
     grandTotal += parseInt(activity.replace(regexNew, '$4'));
     $('.grandTotal').html(`<p>Total: $${grandTotal}</p>`);
@@ -170,7 +167,7 @@ $('.activities').on('change', e => {
   }
 }); // end event listener
 
-// Payment info
+// Hides and shows payment information based on what payment method is selected by the user
 $('#payment').on('change', e => {
   if($(e.target).val() === 'paypal') {
     $('#credit-card, #bitcoin').hide();
@@ -188,30 +185,39 @@ $('#payment').on('change', e => {
   }
 }); // end event listener
 
+// Adds event listener to name input field
 name.on('keyup blur', e => {
   validate(/^[a-zA-Z\s]{2,}$/, $(e.target));
 });
-
+// Adds event listener to email input field
 mail.on('keyup blur', e => {
   validate(/^[^@]+@[^@]+\.[a-z]+$/i, $(e.target));
 });
 
+// Adds event listener to credit card number input field
 creditCardNum.on('keyup blur', e => {
   validate(/^\d{13,16}$/, $(e.target));
 });
 
+// Adds event listener to zip code input field
 zipCode.on('keyup blur', e => {
   validate(/^\d{5}$/, $(e.target));
 });
 
+// Adds event listener to CVV number input field
 cvv.on('keyup blur', e => {
   validate(/^\d{3}$/, $(e.target));
 });
 
-// Validate form
-const validateForm = form => {
-  validate(/^[a-zA-Z\s]{2,}$/, name);
-  validate(/^[^@]+@[^@]+\.[a-z]+$/i, mail);
+/***
+  Checks if all the required input fields are entered correctly
+  and if at least one activity is checked.
+  Returns true if all is fine, false if something isn't right.
+***/
+const validateForm = () => {
+  const nameCorrect = validate(/^[a-zA-Z\s]{2,}$/, name);
+  const mailCorrect = validate(/^[^@]+@[^@]+\.[a-z]+$/i, mail);
+  const activitiesCorrect = Boolean($('.activities :checkbox:checked').length);
 
   // Validate Register for Activities (only one checkbox has to be checked)
   if ($(".activities :checkbox:checked").length === 0) {
@@ -220,15 +226,25 @@ const validateForm = form => {
     $('.activities').removeClass('invalid');
   }
 
-  // Validate creditcard information
+  // Validates creditcard information and then checks the whole form.
   if($('#payment').val() === 'credit card') {
-    validate(/^\d{13,16}$/, creditCardNum);
-    validate(/^\d{5}$/, zipCode);
-    validate(/^\d{3}$/, cvv);
+    const creditCardNumCorrect = validate(/^\d{13,16}$/, creditCardNum);
+    const zipCodeCorrect = validate(/^\d{5}$/, zipCode);
+    const cvvCorrect = validate(/^\d{3}$/, cvv);
+
+    if(nameCorrect && mailCorrect && creditCardNumCorrect && zipCodeCorrect && cvvCorrect && activitiesCorrect) {
+      return true;
+    }
+  } else {
+    if(nameCorrect && mailCorrect && activitiesCorrect) {
+      return true;
+    }
   }
 }; // end function
 
+// Adds event listener to submit button. If the form has errors, the user won't be able to submit.
 $('form').on('submit', e => {
-  e.preventDefault();
-  validateForm();
+  if(!validateForm()) {
+    e.preventDefault();
+  }
 }); // end event listener
