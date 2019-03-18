@@ -234,10 +234,14 @@ const validateForm = () => {
 
     if(nameCorrect && mailCorrect && creditCardNumCorrect && zipCodeCorrect && cvvCorrect && activitiesCorrect) {
       return true;
+    } else {
+      return false;
     }
   } else {
     if(nameCorrect && mailCorrect && activitiesCorrect) {
       return true;
+    } else {
+      return false;
     }
   }
 }; // end function
